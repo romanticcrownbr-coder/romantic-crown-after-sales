@@ -9,17 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Validation patterns
     const patterns = {
         customer_name: /^[a-zA-Z\u4e00-\u9fa5\s]{2,50}$/,
-        contact_info: /(^1[3-9]\d{9}$)|(^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$)/,
+        phone: /^1[3-9]\d{9}$/,
+        email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         order_id: /^[a-zA-Z0-9-]{5,30}$/,
-        product_name: /^.{1,100}$/,
         issue_description: /^[\s\S]{10,1000}$/
     };
 
     const errorMessages = {
         customer_name: '请输入有效的姓名（2-50个字符）',
-        contact_info: '请输入有效的手机号码或电子邮箱',
+        phone: '请输入有效的手机号码',
+        email: '请输入有效的电子邮箱',
         order_id: '请输入有效的订单编号',
-        product_name: '请输入产品名称',
         issue_description: '问题描述需在10-1000字之间'
     };
 
