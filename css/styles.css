@@ -9,8 +9,8 @@
     --color-text-secondary: #666666;
     --color-error: #D32F2F;
     
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Noto Sans SC', sans-serif;
+    --font-heading: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     
     --spacing-xs: 4px;
     --spacing-sm: 8px;
