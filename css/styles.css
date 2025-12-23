@@ -50,13 +50,26 @@ body {
 }
 
 .logo-container {
-    max-width: 200px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.logo {
-    height: 40px;
-    width: auto;
+.logo-text {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-white);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    text-align: center;
 }
 
 .main-content {
