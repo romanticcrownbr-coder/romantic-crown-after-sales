@@ -1,8 +1,8 @@
 :root {
     --color-black: #000000;
     --color-white: #FFFFFF;
-    --color-gold: #D4AF37;
-    --color-gold-hover: #B4942B;
+    --color-gold: #000000;
+    --color-gold-hover: #333333;
     --color-gray-light: #F9F9F9;
     --color-gray-border: #E0E0E0;
     --color-text-primary: #1A1A1A;
