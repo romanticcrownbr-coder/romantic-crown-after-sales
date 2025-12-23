@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提交成功 | Romantic Crown</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-lg);
+            display: block;
+        }
+        .success-circle {
+            fill: none;
+            stroke: var(--color-gold);
+            stroke-width: 2;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: circle-anim 1s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .success-check {
+            fill: none;
+            stroke: var(--color-gold);
+            stroke-width: 2;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: check-anim 0.5s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes circle-anim {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes check-anim {
+            100% { stroke-dashoffset: 0; }
+        }
+        .success-container {
+            text-align: center;
+            padding: var(--spacing-xxl) 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: var(--spacing-xl);
+            color: var(--color-text-primary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--color-gold);
+            padding-bottom: 2px;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: var(--color-gold);
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="logo-container">
+            <img src="images/logo.svg" alt="Romantic Crown" class="logo">
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="form-container">
+            <div class="success-container">
+                <svg class="success-icon" viewBox="0 0 52 52">
+                    <circle class="success-circle" cx="26" cy="26" r="25" />
+                    <path class="success-check" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+                
+                <h1 class="page-title">提交成功</h1>
+                <p class="page-subtitle">Thank You</p>
+                
+                <div class="divider"></div>
+                
+                <p class="form-description">
+                    您的售后申请已成功提交。<br>
+                    我们的客服团队将在24小时内审核并与您联系。<br>
+                    请留意您的手机短信或电子邮件。
+                </p>
+
+                <a href="index.html" class="back-link">返回首页 / Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2024 Romantic Crown. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
