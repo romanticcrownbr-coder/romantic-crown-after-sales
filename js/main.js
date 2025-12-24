@@ -61,6 +61,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize state on load
     toggleDescription();
 
+    // Initialize Flatpickr for date input
+    flatpickr("#purchase_date", {
+        locale: "pt",
+        dateFormat: "d/m/Y",
+        disableMobile: false, // Force custom picker on mobile for consistent Portuguese experience
+        allowInput: true, // Allow manual typing if needed
+        maxDate: "today"
+    });
+
     // Character counter
     if (descInput && charCount) {
         descInput.addEventListener('input', function() {

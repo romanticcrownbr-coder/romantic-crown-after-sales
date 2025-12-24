@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_blue.css">
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -50,13 +53,7 @@
         .animate-fade-in {
             animation: fadeIn 0.6s ease-out forwards;
         }
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.5);
-            cursor: pointer;
-        }
-        .dark input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(0.8);
-        }
+        /* Removed native date picker styles since we are using Flatpickr */
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             transition: font-variation-settings 0.3s ease;
@@ -68,7 +65,8 @@
         
         /* Custom error styles */
         .form-group.error input,
-        .form-group.error textarea {
+        .form-group.error textarea,
+        .form-group.error .flatpickr-input { /* Added flatpickr support */
             border-color: #ef4444; /* red-500 */
             box-shadow: 0 0 0 1px #ef4444;
         }
@@ -99,6 +97,15 @@
             100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
         }
         .hidden { display: none; }
+        
+        /* Flatpickr Customization to match theme */
+        .flatpickr-calendar {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+            background: #D4AF37;
+            border-color: #D4AF37;
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans min-h-screen flex flex-col transition-colors duration-300">
@@ -193,7 +200,8 @@
                                     Data da Compra <span class="text-primary">*</span>
                                 </label>
                                 <div class="relative">
-                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="purchase_date" name="purchase_date" required="" type="text" placeholder="DD / MM / AAAA" onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" lang="pt-BR"/>
+                                    <!-- Changed back to simple input, let Flatpickr handle it -->
+                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="purchase_date" name="purchase_date" required="" type="text" placeholder="DD / MM / AAAA"/>
                                 </div>
                                 <span class="error-message" id="date-error"></span>
                             </div>
@@ -620,7 +628,7 @@
                         <li><strong>Bases Legais para o Tratamento:</strong> Todo tratamento de dados pessoais realizado pela Loja é fundamentado em uma base legal válida, prevista nos Artigos 7º e 11 (para dados sensíveis, se aplicável) da LGPD. As principais bases legais que utilizamos são:
                             <ul class="list-disc pl-5 mt-1">
                                 <li><em>Consentimento (Art. 7º, I):</em> Utilizado para finalidades específicas para as quais solicitamos sua autorização explícita, como o envio de e-mails de marketing, uso de cookies não essenciais, ou tratamento de dados sensíveis (se ocorrer). O consentimento deve ser livre, informado, inequívoco, específico para a finalidade e facilmente revogável a qualquer momento. A forma de obtenção do consentimento será clara (ex: uma caixa de seleção não pré-marcada para newsletters).</li>
-                                <li><em>Execução de Contrato ou Procedimentos Preliminares (Art. 7º, V):</em> Necessário para cumprir nossas obrigações contratuais com você, como processar seu pedido, receber o pagamento, providenciar a entrega do produto, gerenciar sua conta relacionada à compra, e lidar com devoluções ou garantias.</li>
+                                <li><em>Execução de Contrato ou Procedimentos Preliminares (Art. 7º, V):</em> Necessário para cumprir nossas obrigações contratuais com você, como processar seu pedido, receber o pagamento, providenciar a entrega do produto, gerenciar sua conta relacionada à compra, e lidar com devoluções e garantias.</li>
                                 <li><em>Cumprimento de Obrigação Legal ou Regulatória (Art. 7º, II):</em> Quando o tratamento é necessário para cumprir leis ou regulamentos aos quais estamos sujeitos, como a emissão de notas fiscais, cumprimento de obrigações do Código de Defesa do Consumidor, ou atendimento a ordens judiciais ou de autoridades competentes.</li>
                                 <li><em>Legítimo Interesse (Art. 7º, IX):</em> Podemos tratar dados com base em nosso legítimo interesse ou de terceiros, desde que suas liberdades e direitos fundamentais não prevaleçam. Exemplos incluem garantir a segurança do nosso site, prevenir fraudes, realizar análises internas para melhorar nossos serviços e produtos, e para fins administrativos. Nesses casos, realizamos uma avaliação (teste de balanceamento) para garantir a legitimidade e a proporcionalidade do tratamento. Os interesses legítimos específicos serão comunicados quando aplicável.</li>
                                 <li><em>Proteção do Crédito (Art. 7º, X):</em> Aplicável em situações específicas relacionadas à análise e proteção de crédito, como em casos de vendas parceladas ou verificações para prevenção de fraudes financeiras, sempre em conformidade com a legislação pertinente.</li>
@@ -893,6 +901,9 @@
         </div>
     </div>
 
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
