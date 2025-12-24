@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function validateField(input) {
+        // Skip validation if the element is hidden
+        if (input.offsetParent === null) return true;
+
         const fieldName = input.name;
         const value = input.value.trim();
         const pattern = patterns[fieldName];
