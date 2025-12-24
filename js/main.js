@@ -95,14 +95,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Validate inputs
         inputs.forEach(input => {
-            if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'problem_type') return;
+            if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'service_type') return;
             if (!validateField(input)) {
                 isValid = false;
             }
         });
 
-        // Validate radio buttons (Problem Type)
-        const radioButtons = form.querySelectorAll('input[name="problem_type"]');
+        // Validate radio buttons (Service Type)
+        const radioButtons = form.querySelectorAll('input[name="service_type"]');
         let radioChecked = false;
         radioButtons.forEach(radio => {
             if (radio.checked) radioChecked = true;
