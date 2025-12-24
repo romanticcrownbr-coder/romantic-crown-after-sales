@@ -25,6 +25,42 @@ document.addEventListener('DOMContentLoaded', () => {
         purchase_date: '请选择购买日期'
     };
 
+    // Service Type & Description Visibility Logic
+    const descSection = document.getElementById('description-section');
+    const serviceRadios = form.querySelectorAll('input[name="service_type"]');
+
+    function toggleDescription() {
+        let selectedValue = null;
+        serviceRadios.forEach(radio => {
+            if (radio.checked) selectedValue = radio.value;
+        });
+
+        // Only show description for 'claim' (申请保修) and 'support' (技术支持)
+        if (selectedValue === 'claim' || selectedValue === 'support') {
+            descSection.classList.remove('hidden');
+            descSection.classList.add('animate-fade-in');
+            descInput.setAttribute('required', '');
+        } else {
+            // Hide for 'register' (注册保修) or no selection
+            descSection.classList.add('hidden');
+            descSection.classList.remove('animate-fade-in');
+            descInput.removeAttribute('required');
+            
+            // Clear validation state
+            const formGroup = descInput.closest('.form-group');
+            if (formGroup) formGroup.classList.remove('error');
+            const errorSpan = document.getElementById('desc-error');
+            if (errorSpan) errorSpan.textContent = '';
+        }
+    }
+
+    serviceRadios.forEach(radio => {
+        radio.addEventListener('change', toggleDescription);
+    });
+
+    // Initialize state on load
+    toggleDescription();
+
     // Character counter
     if (descInput && charCount) {
         descInput.addEventListener('input', function() {
@@ -42,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Real-time validation
     const inputs = form.querySelectorAll('input, textarea');
     inputs.forEach(input => {
-        if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'problem_type') return;
+        if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'service_type') return;
         
         input.addEventListener('blur', () => {
             validateField(input);
