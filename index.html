@@ -1,101 +1,316 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>售后登记服务 | Romantic Crown</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Romantic Crown - 售后登记服务</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#D4AF37", // Elegant Gold
+                        "primary-hover": "#B5952F",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#111827",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                        "text-light": "#374151",
+                        "text-dark": "#D1D5DB",
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans SC"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0, 0, 0, 0.08)',
+                    }
+                },
+            },
+        };
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .form-input:focus, .form-textarea:focus {
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5);
+            cursor: pointer;
+        }
+        .dark input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            transition: font-variation-settings 0.3s ease;
+        }
+        .group:hover .material-symbols-outlined,
+        .peer:checked ~ div .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Custom error styles */
+        .form-group.error input,
+        .form-group.error textarea {
+            border-color: #ef4444; /* red-500 */
+            box-shadow: 0 0 0 1px #ef4444;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        /* Spinner */
+        .spinner {
+            animation: rotate 2s linear infinite;
+            width: 24px;
+            height: 24px;
+        }
+        .path {
+            stroke: #ffffff;
+            stroke-linecap: round;
+            animation: dash 1.5s ease-in-out infinite;
+        }
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes dash {
+            0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+            50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+            100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+        }
+        .hidden { display: none; }
+    </style>
 </head>
-<body>
-    <header class="site-header">
-        <div class="logo-container">
-            <h1 class="logo-text">ROMANTIC CROWN</h1>
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-sans min-h-screen flex flex-col transition-colors duration-300">
+    <header class="bg-black text-white py-6 shadow-md z-10 sticky top-0">
+        <div class="container mx-auto text-center">
+            <h1 class="font-serif text-2xl md:text-3xl tracking-[0.2em] font-bold uppercase">Romantic Crown</h1>
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="form-container">
-            <div class="form-header">
-                <h1 class="page-title">售后登记服务</h1>
-                <p class="form-description">
-                    尊贵的顾客，请填写以下信息，我们将竭诚为您解决问题。<br>
-                    我们承诺在24小时内与您联系。
-                </p>
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+            <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl opacity-50 dark:opacity-20"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-3xl opacity-50 dark:opacity-20"></div>
+        </div>
+
+        <div class="w-full max-w-3xl animate-fade-in">
+            <div class="bg-surface-light dark:bg-surface-dark shadow-soft rounded-xl border-t-4 border-primary overflow-hidden">
+                <div class="px-8 pt-12 pb-8 text-center">
+                    <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">售后登记服务</h2>
+                    <div class="max-w-xl mx-auto space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <p>尊敬的顾客，请填写以下信息，我们将竭诚为您解决问题。</p>
+                    </div>
+                </div>
+
+                <form name="after-sales-registration" 
+                      method="POST" 
+                      action="/thank-you.html" 
+                      class="px-8 pb-12 space-y-12" 
+                      id="serviceForm"
+                      data-netlify="true" 
+                      data-netlify-honeypot="bot-field">
+                    
+                    <!-- Netlify Honeypot & Hidden Fields -->
+                    <p class="hidden">
+                        <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+                    </p>
+                    <input type="hidden" name="form-name" value="after-sales-registration" />
+
+                    <section class="space-y-6">
+                        <div class="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+                            <span class="material-symbols-outlined text-primary">person</span>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">个人信息</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2 md:col-span-2 form-group">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="name">
+                                    姓名 <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="name" name="name" placeholder="请输入您的姓名" required="" type="text"/>
+                                </div>
+                                <span class="error-message" id="name-error"></span>
+                            </div>
+                            <div class="space-y-2 form-group">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="email">
+                                    邮箱 <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="email" name="email" placeholder="example@email.com" required="" type="email"/>
+                                </div>
+                                <span class="error-message" id="email-error"></span>
+                            </div>
+                            <div class="space-y-2 form-group">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="phone">
+                                    电话 <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="phone" name="phone" placeholder="请输入您的联系电话" required="" type="tel"/>
+                                </div>
+                                <span class="error-message" id="phone-error"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="space-y-6">
+                        <div class="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+                            <span class="material-symbols-outlined text-primary">shopping_bag</span>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">订单信息</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2 form-group">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="order_number">
+                                    订单编号 <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="order_number" name="order_number" placeholder="例如：RC-20231225-001" required="" type="text"/>
+                                </div>
+                                <span class="error-message" id="order-error"></span>
+                            </div>
+                            <div class="space-y-2 form-group">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="purchase_date">
+                                    购买日期 <span class="text-primary">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out" id="purchase_date" name="purchase_date" required="" type="date"/>
+                                </div>
+                                <span class="error-message" id="date-error"></span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="space-y-6">
+                        <div class="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+                            <span class="material-symbols-outlined text-primary">category</span>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">问题类型</h3>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                            <label class="cursor-pointer relative group">
+                                <input class="peer sr-only" name="problem_type" required="" type="radio" value="return"/>
+                                <div class="w-full p-6 h-full rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-primary hover:bg-primary/5 hover:shadow-xl hover:-translate-y-1 peer-checked:border-primary peer-checked:bg-white peer-checked:ring-2 peer-checked:ring-primary/20 peer-checked:shadow-lg peer-checked:shadow-primary/10 transition-all duration-300 ease-out flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden">
+                                    <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity duration-300 text-primary">
+                                        <span class="material-symbols-outlined text-2xl">check_circle</span>
+                                    </div>
+                                    <div class="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/10 peer-checked:bg-primary peer-checked:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl text-gray-400 group-hover:text-primary peer-checked:text-white transition-colors duration-300">assignment_return</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 group-hover:text-primary peer-checked:text-primary transition-colors">退货</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">不喜欢 / 拍错</p>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative group">
+                                <input class="peer sr-only" name="problem_type" type="radio" value="exchange"/>
+                                <div class="w-full p-6 h-full rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-primary hover:bg-primary/5 hover:shadow-xl hover:-translate-y-1 peer-checked:border-primary peer-checked:bg-white peer-checked:ring-2 peer-checked:ring-primary/20 peer-checked:shadow-lg peer-checked:shadow-primary/10 transition-all duration-300 ease-out flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden">
+                                    <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity duration-300 text-primary">
+                                        <span class="material-symbols-outlined text-2xl">check_circle</span>
+                                    </div>
+                                    <div class="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/10 peer-checked:bg-primary peer-checked:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl text-gray-400 group-hover:text-primary peer-checked:text-white transition-colors duration-300">swap_horiz</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 group-hover:text-primary peer-checked:text-primary transition-colors">换货</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">尺码 / 颜色更换</p>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer relative group">
+                                <input class="peer sr-only" name="problem_type" type="radio" value="repair"/>
+                                <div class="w-full p-6 h-full rounded-2xl border-2 border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-primary hover:bg-primary/5 hover:shadow-xl hover:-translate-y-1 peer-checked:border-primary peer-checked:bg-white peer-checked:ring-2 peer-checked:ring-primary/20 peer-checked:shadow-lg peer-checked:shadow-primary/10 transition-all duration-300 ease-out flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden">
+                                    <div class="absolute top-3 right-3 opacity-0 peer-checked:opacity-100 transition-opacity duration-300 text-primary">
+                                        <span class="material-symbols-outlined text-2xl">check_circle</span>
+                                    </div>
+                                    <div class="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-700 flex items-center justify-center group-hover:scale-110 group-hover:bg-primary/10 peer-checked:bg-primary peer-checked:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl text-gray-400 group-hover:text-primary peer-checked:text-white transition-colors duration-300">handyman</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-900 dark:text-white text-lg mb-1 group-hover:text-primary peer-checked:text-primary transition-colors">维修</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">瑕疵 / 损坏</p>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <section class="space-y-6">
+                        <div class="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-700 pb-2">
+                            <span class="material-symbols-outlined text-primary">description</span>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">问题描述</h3>
+                        </div>
+                        <div class="space-y-2 form-group">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300" for="description">
+                                详细描述 <span class="text-primary">*</span>
+                            </label>
+                            <div class="relative">
+                                <textarea class="block w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:border-primary focus:ring-primary sm:text-sm transition-shadow duration-200 ease-in-out resize-none" id="description" name="description" placeholder="请详细描述您遇到的问题..." required="" rows="6"></textarea>
+                                <div class="absolute bottom-3 right-3 text-xs text-gray-400">
+                                    <span id="current-count">0</span>/1000
+                                </div>
+                            </div>
+                            <span class="error-message" id="desc-error"></span>
+                        </div>
+                    </section>
+
+                    <div class="pt-4 flex justify-center">
+                        <button class="submit-btn w-full sm:w-auto px-12 py-3 bg-primary hover:bg-primary-hover text-white font-medium text-lg rounded shadow-lg transform transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-surface-dark flex items-center justify-center" type="submit">
+                            <span class="btn-text">提交申请</span>
+                            <span class="btn-loading hidden ml-2">
+                                <svg class="spinner" viewBox="0 0 50 50">
+                                    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
-
-            <form name="after-sales-registration" 
-                  method="POST" 
-                  action="/thank-you.html"
-                  data-netlify="true" 
-                  data-netlify-honeypot="bot-field"
-                  class="service-form"
-                  id="serviceForm">
-                
-                <!-- Netlify Honeypot Field -->
-                <p class="hidden">
-                    <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
-                </p>
-                <!-- Required for Netlify Forms to work properly -->
-                <input type="hidden" name="form-name" value="after-sales-registration" />
-
-                <div class="form-section">
-                    <h2 class="section-title">个人信息</h2>
-                    
-                    <div class="form-group">
-                        <label for="customer_name" class="form-label">姓名 <span class="required">*</span></label>
-                        <input type="text" id="customer_name" name="customer_name" class="form-input" required minlength="2" maxlength="50" placeholder="请输入您的姓名">
-                        <span class="error-message" id="name-error"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="contact_info" class="form-label">联系方式 <span class="required">*</span></label>
-                        <input type="text" id="contact_info" name="contact_info" class="form-input" required placeholder="手机号码或电子邮箱">
-                        <span class="error-message" id="contact-error"></span>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h2 class="section-title">订单信息</h2>
-                    
-                    <div class="form-group">
-                        <label for="order_id" class="form-label">订单编号 <span class="required">*</span></label>
-                        <input type="text" id="order_id" name="order_id" class="form-input" required placeholder="例如：RC-20231225-001">
-                        <span class="error-message" id="order-error"></span>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h2 class="section-title">问题描述</h2>
-                    
-                    <div class="form-group">
-                        <label for="issue_description" class="form-label">详细描述 <span class="required">*</span></label>
-                        <textarea id="issue_description" name="issue_description" class="form-textarea" required minlength="10" maxlength="1000" placeholder="请详细描述您遇到的问题..."></textarea>
-                        <div class="char-count"><span id="current-count">0</span>/1000</div>
-                        <span class="error-message" id="desc-error"></span>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="submit-btn">
-                        <span class="btn-text">提交申请</span>
-                        <span class="btn-loading hidden">
-                            <svg class="spinner" viewBox="0 0 50 50">
-                                <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-                            </svg>
-                        </span>
-                    </button>
-                </div>
-            </form>
+            <div class="mt-8 text-center text-xs text-gray-500 dark:text-gray-500 pb-8 lg:pb-0">
+                © 2024 Romantic Crown. 保留所有权利。
+            </div>
         </div>
     </main>
 
-    <footer class="site-footer">
-        <p>&copy; 2024 Romantic Crown. 保留所有权利。</p>
+    <footer class="bg-gray-900 text-white py-6 border-t border-gray-800">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+            <div class="mb-4 md:mb-0">
+                <span class="font-serif font-bold tracking-widest text-white mr-2">ROMANTIC CROWN</span>
+            </div>
+            <div class="flex space-x-6">
+                <a class="hover:text-white transition-colors" href="#">隐私政策</a>
+                <a class="hover:text-white transition-colors" href="#">服务条款</a>
+            </div>
+        </div>
     </footer>
 
+    <script>
+        // Check local storage or system preference on load
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('serviceForm');
-    const descInput = document.getElementById('issue_description');
+    const descInput = document.getElementById('description');
     const charCount = document.getElementById('current-count');
     const submitBtn = form.querySelector('.submit-btn');
     const btnText = submitBtn.querySelector('.btn-text');
@@ -8,37 +8,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validation patterns
     const patterns = {
-        customer_name: /^[a-zA-Z\u4e00-\u9fa5\s]{2,50}$/,
+        name: /^[a-zA-Z\u4e00-\u9fa5\s]{2,50}$/,
         phone: /^1[3-9]\d{9}$/,
         email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-        order_id: /^[a-zA-Z0-9-]{5,30}$/,
-        issue_description: /^[\s\S]{10,1000}$/
+        order_number: /^[a-zA-Z0-9-]{5,30}$/,
+        description: /^[\s\S]{10,1000}$/,
+        purchase_date: /.+/ // Simple check for date
     };
 
     const errorMessages = {
-        customer_name: '请输入有效的姓名（2-50个字符）',
+        name: '请输入有效的姓名（2-50个字符）',
         phone: '请输入有效的手机号码',
         email: '请输入有效的电子邮箱',
-        order_id: '请输入有效的订单编号',
-        issue_description: '问题描述需在10-1000字之间'
+        order_number: '请输入有效的订单编号',
+        description: '问题描述需在10-1000字之间',
+        purchase_date: '请选择购买日期'
     };
 
     // Character counter
-    descInput.addEventListener('input', function() {
-        const length = this.value.length;
-        charCount.textContent = length;
-        if (length > 1000) {
-            charCount.style.color = 'var(--color-error)';
-        } else {
-            charCount.style.color = 'var(--color-text-secondary)';
-        }
-        validateField(this);
-    });
+    if (descInput && charCount) {
+        descInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            if (length > 1000) {
+                charCount.classList.add('text-red-500');
+            } else {
+                charCount.classList.remove('text-red-500');
+            }
+            validateField(this);
+        });
+    }
 
     // Real-time validation
     const inputs = form.querySelectorAll('input, textarea');
     inputs.forEach(input => {
-        if (input.name === 'bot-field' || input.type === 'hidden') return;
+        if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'problem_type') return;
         
         input.addEventListener('blur', () => {
             validateField(input);
@@ -46,7 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         input.addEventListener('input', () => {
             // Clear error when typing
-            if (input.parentElement.classList.contains('error')) {
+            const formGroup = input.closest('.form-group');
+            if (formGroup && formGroup.classList.contains('error')) {
                 validateField(input);
             }
         });
@@ -57,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const value = input.value.trim();
         const pattern = patterns[fieldName];
         const errorSpan = document.getElementById(getErrorId(fieldName));
-        const formGroup = input.parentElement;
+        const formGroup = input.closest('.form-group');
 
-        if (!pattern) return true;
+        if (!pattern || !formGroup) return true;
 
         if (!pattern.test(value)) {
             formGroup.classList.add('error');
@@ -74,40 +79,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getErrorId(fieldName) {
         switch(fieldName) {
-            case 'customer_name': return 'name-error';
-            case 'contact_info': return 'contact-error';
-            case 'order_id': return 'order-error';
-            case 'product_name': return 'product-error';
-            case 'issue_description': return 'desc-error';
+            case 'name': return 'name-error';
+            case 'phone': return 'phone-error';
+            case 'email': return 'email-error';
+            case 'order_number': return 'order-error';
+            case 'description': return 'desc-error';
+            case 'purchase_date': return 'date-error';
             default: return '';
         }
     }
 
     // Form submission
     form.addEventListener('submit', (e) => {
-        // Netlify Forms handles the submission, but we want to validate first
-        // If JS is disabled, browser validation works.
-        // With JS, we can show custom UI.
-        
         let isValid = true;
+        
+        // Validate inputs
         inputs.forEach(input => {
-            if (input.name === 'bot-field' || input.type === 'hidden') return;
+            if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'problem_type') return;
             if (!validateField(input)) {
                 isValid = false;
             }
         });
 
+        // Validate radio buttons (Problem Type)
+        const radioButtons = form.querySelectorAll('input[name="problem_type"]');
+        let radioChecked = false;
+        radioButtons.forEach(radio => {
+            if (radio.checked) radioChecked = true;
+        });
+        
+        // Note: Radio validation visual feedback is tricky with custom UI, 
+        // relying on browser 'required' attribute mostly, or we could add custom logic here.
+
         if (!isValid) {
             e.preventDefault();
-            // Shake animation or scroll to first error could be added here
             return;
         }
 
         // Show loading state
-        submitBtn.disabled = true;
-        btnText.classList.add('hidden');
-        btnLoading.classList.remove('hidden');
-
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            if (btnText) btnText.classList.add('hidden');
+            if (btnLoading) btnLoading.classList.remove('hidden');
+        }
+        
         // Allow default form submission to Netlify
     });
 });
