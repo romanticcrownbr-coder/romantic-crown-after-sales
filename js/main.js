@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const errorMessages = {
-        name: '请输入有效的姓名（2-50个字符）',
-        phone: '请输入有效的手机号码',
-        email: '请输入有效的电子邮箱',
-        order_number: '请输入有效的订单编号',
-        description: '问题描述需在10-1000字之间',
-        purchase_date: '请选择购买日期'
+        name: 'Por favor, insira um nome válido (2-50 caracteres)',
+        phone: 'Por favor, insira um número de telefone válido',
+        email: 'Por favor, insira um e-mail válido',
+        order_number: 'Por favor, insira um número de pedido válido',
+        description: 'A descrição do problema deve ter entre 10 e 1000 caracteres',
+        purchase_date: 'Por favor, selecione a data da compra'
     };
 
     // Service Type & Description Visibility Logic
@@ -130,6 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Form submission
     form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
         let isValid = true;
         
         // Validate inputs
@@ -147,11 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (radio.checked) radioChecked = true;
         });
         
-        // Note: Radio validation visual feedback is tricky with custom UI, 
-        // relying on browser 'required' attribute mostly, or we could add custom logic here.
-
         if (!isValid) {
-            e.preventDefault();
             return;
         }
 
@@ -162,6 +160,119 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btnLoading) btnLoading.classList.remove('hidden');
         }
         
-        // Allow default form submission to Netlify
+        // Submit to Netlify via AJAX
+        const formData = new FormData(form);
+        
+        fetch('/', {
+            method: 'POST',
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams(formData).toString()
+        })
+        .then(() => {
+            // Success
+            openSuccessModal();
+            form.reset();
+            toggleDescription(); // Reset visibility
+        })
+        .catch((error) => {
+            alert('Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.');
+            console.error(error);
+        })
+        .finally(() => {
+            // Reset loading state
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                if (btnText) btnText.classList.remove('hidden');
+                if (btnLoading) btnLoading.classList.add('hidden');
+            }
+        });
     });
+
+    // Success Modal Logic
+    const successModal = document.getElementById('success-modal');
+    const closeSuccessBtn = document.getElementById('close-success-btn');
+    const successModalBackdrop = document.getElementById('success-modal-backdrop');
+
+    function openSuccessModal() {
+        if (successModal) {
+            successModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeSuccessModal() {
+        if (successModal) {
+            successModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
+
+    if (closeSuccessBtn) closeSuccessBtn.addEventListener('click', closeSuccessModal);
+    if (successModalBackdrop) successModalBackdrop.addEventListener('click', closeSuccessModal);
+
+    // Terms Modal Logic
+    const termsLink = document.getElementById('terms-link');
+    const termsModal = document.getElementById('terms-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const closeModalFooterBtn = document.getElementById('close-modal-footer-btn');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+
+    if (termsLink && termsModal) {
+        function openModal(e) {
+            e.preventDefault();
+            termsModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling background
+        }
+
+        function closeModal() {
+            termsModal.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        termsLink.addEventListener('click', openModal);
+        
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        if (closeModalFooterBtn) closeModalFooterBtn.addEventListener('click', closeModal);
+        if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !termsModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    }
+
+    // Privacy Modal Logic
+    const privacyLink = document.getElementById('privacy-link');
+    const privacyModal = document.getElementById('privacy-modal');
+    const closePrivacyBtn = document.getElementById('close-privacy-btn');
+    const closePrivacyFooterBtn = document.getElementById('close-privacy-footer-btn');
+    const privacyModalBackdrop = document.getElementById('privacy-modal-backdrop');
+
+    if (privacyLink && privacyModal) {
+        function openPrivacyModal(e) {
+            e.preventDefault();
+            privacyModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePrivacyModal() {
+            privacyModal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        privacyLink.addEventListener('click', openPrivacyModal);
+        
+        if (closePrivacyBtn) closePrivacyBtn.addEventListener('click', closePrivacyModal);
+        if (closePrivacyFooterBtn) closePrivacyFooterBtn.addEventListener('click', closePrivacyModal);
+        if (privacyModalBackdrop) privacyModalBackdrop.addEventListener('click', closePrivacyModal);
+
+        // Close on ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !privacyModal.classList.contains('hidden')) {
+                closePrivacyModal();
+            }
+        });
+    }
 });
