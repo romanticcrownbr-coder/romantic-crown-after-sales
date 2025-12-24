@@ -78,6 +78,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Real-time validation
     const inputs = form.querySelectorAll('input, textarea');
     inputs.forEach(input => {
+        // Handle native validation message (browser tooltip)
+        input.addEventListener('invalid', function() {
+            if (this.validity.valueMissing) {
+                this.setCustomValidity('Por favor, preencha este campo.');
+            } else if (this.validity.typeMismatch) {
+                if (this.type === 'email') {
+                    this.setCustomValidity('Por favor, insira um endereço de e-mail válido.');
+                } else if (this.type === 'url') {
+                    this.setCustomValidity('Por favor, insira uma URL válida.');
+                } else {
+                    this.setCustomValidity('Por favor, insira um valor válido.');
+                }
+            } else if (this.validity.patternMismatch) {
+                this.setCustomValidity('Por favor, siga o formato solicitado.');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Clear custom validity on input
+        input.addEventListener('input', function() {
+            this.setCustomValidity('');
+        });
+
         if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'service_type') return;
         
         input.addEventListener('blur', () => {
