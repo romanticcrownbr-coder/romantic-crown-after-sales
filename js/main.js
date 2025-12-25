@@ -37,13 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!descSection) return;
 
-        // Only show description for 'claim' (申请保修) and 'support' (技术支持)
+        // Only show description for 'claim' and 'support'
         if (selectedValue === 'claim' || selectedValue === 'support') {
             descSection.classList.remove('hidden');
             descSection.classList.add('animate-fade-in');
             if(descInput) descInput.setAttribute('required', '');
         } else {
-            // Hide for 'register' (注册保修) or no selection
+            // Hide for 'register' or no selection
             descSection.classList.add('hidden');
             descSection.classList.remove('animate-fade-in');
             if(descInput) descInput.removeAttribute('required');
