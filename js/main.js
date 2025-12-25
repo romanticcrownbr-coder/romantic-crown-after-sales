@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('serviceForm');
     const descInput = document.getElementById('description');
     const charCount = document.getElementById('current-count');
-    const submitBtn = form.querySelector('.submit-btn');
-    const btnText = submitBtn.querySelector('.btn-text');
-    const btnLoading = submitBtn.querySelector('.btn-loading');
+    const preSubmitBtn = document.getElementById('pre-submit-btn');
+    const finalSubmitBtn = document.getElementById('final-submit-btn');
+    const captchaModalOverlay = document.getElementById('captcha-modal-overlay');
+    const cancelCaptchaBtn = document.getElementById('cancel-captcha-btn');
+    const btnLoading = finalSubmitBtn ? finalSubmitBtn.querySelector('.btn-loading') : null;
 
     // Validation patterns
     const patterns = {
