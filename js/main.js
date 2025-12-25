@@ -161,42 +161,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Form submission
+    // Step 1: Pre-submit button click -> Validate -> Open Captcha Modal
+    if (preSubmitBtn) {
+        preSubmitBtn.addEventListener('click', () => {
+            let isValid = true;
+            
+            // Validate inputs
+            const inputs = form.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'service_type') return;
+                // Skip validation for inputs inside the captcha modal (like checkbox hacks if any, though reCAPTCHA is iframe)
+                if (captchaModalOverlay.contains(input)) return; 
+                
+                if (!validateField(input)) {
+                    isValid = false;
+                }
+            });
+
+            // Validate radio buttons
+            const radioButtons = form.querySelectorAll('input[name="service_type"]');
+            let radioChecked = false;
+            radioButtons.forEach(radio => {
+                if (radio.checked) radioChecked = true;
+            });
+            
+            // Trigger native validation report if needed, or focus first error
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            if (!isValid) {
+                // Focus first error
+                const firstError = form.querySelector('.form-group.error input, .form-group.error textarea');
+                if (firstError) firstError.focus();
+                return;
+            }
+
+            // Client-side Duplicate Check
+            const formData = new FormData(form);
+            const orderNumber = formData.get('order_number').trim();
+            const submittedOrders = JSON.parse(localStorage.getItem('submitted_orders') || '[]');
+            if (submittedOrders.includes(orderNumber)) {
+                alert('Atenção: Este número de pedido já foi enviado anteriormente. Se precisar de nova assistência, entre em contato direto por e-mail.');
+                return;
+            }
+
+            // If all valid, open Captcha Modal
+            captchaModalOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+
+    // Step 2: Handle Cancel in Modal
+    if (cancelCaptchaBtn) {
+        cancelCaptchaBtn.addEventListener('click', () => {
+            captchaModalOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+    }
+
+    // Step 3: Final Submission (Triggered by 'Confirmar' button inside form)
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        let isValid = true;
-        
-        // Validate inputs
-        inputs.forEach(input => {
-            if (input.name === 'bot-field' || input.type === 'hidden' || input.name === 'service_type') return;
-            if (!validateField(input)) {
-                isValid = false;
-            }
-        });
-
-        // Validate radio buttons (Service Type)
-        const radioButtons = form.querySelectorAll('input[name="service_type"]');
-        let radioChecked = false;
-        radioButtons.forEach(radio => {
-            if (radio.checked) radioChecked = true;
-        });
-        
-        if (!isValid) {
-            return;
-        }
-
         const formData = new FormData(form);
         const orderNumber = formData.get('order_number').trim();
-
-        // 1. Client-side Duplicate Check
         const submittedOrders = JSON.parse(localStorage.getItem('submitted_orders') || '[]');
-        if (submittedOrders.includes(orderNumber)) {
-            alert('Atenção: Este número de pedido já foi enviado anteriormente. Se precisar de nova assistência, entre em contato direto por e-mail.');
-            return;
-        }
 
-        // 2. Simple Client-side Captcha Check (UX only, real check is server-side)
+        // 2. Simple Client-side Captcha Check
         if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
             const captchaResponse = formData.get('g-recaptcha-response');
             if (captchaResponse === "") {
@@ -205,15 +238,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Show loading state
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            if (btnText) btnText.classList.add('hidden');
+        // Show loading state on final button
+        if (finalSubmitBtn) {
+            finalSubmitBtn.disabled = true;
             if (btnLoading) btnLoading.classList.remove('hidden');
         }
         
         // Submit to Netlify via AJAX
-        
         fetch('/', {
             method: 'POST',
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -223,13 +254,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // Save order number to local storage to prevent duplicates
+            // Save order number to local storage
             submittedOrders.push(orderNumber);
             localStorage.setItem('submitted_orders', JSON.stringify(submittedOrders));
             
+            // Close Captcha Modal
+            captchaModalOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+
             openSuccessModal();
             form.reset();
-            // Reset captcha if it exists
+            // Reset captcha
             if (window.grecaptcha) {
                 window.grecaptcha.reset();
             }
@@ -242,9 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .finally(() => {
             // Reset loading state
-            if (submitBtn) {
-                submitBtn.disabled = false;
-                if (btnText) btnText.classList.remove('hidden');
+            if (finalSubmitBtn) {
+                finalSubmitBtn.disabled = false;
                 if (btnLoading) btnLoading.classList.add('hidden');
             }
         });
