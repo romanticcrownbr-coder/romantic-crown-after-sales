@@ -219,19 +219,26 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams(formData).toString()
         })
-        .then(() => {
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
             // Save order number to local storage to prevent duplicates
             submittedOrders.push(orderNumber);
             localStorage.setItem('submitted_orders', JSON.stringify(submittedOrders));
-
-            // Success
+            
             openSuccessModal();
             form.reset();
-            toggleDescription(); // Reset visibility
+            // Reset captcha if it exists
+            if (window.grecaptcha) {
+                window.grecaptcha.reset();
+            }
+            if (descSection) descSection.classList.add('hidden');
+            if (charCount) charCount.textContent = '0';
         })
         .catch((error) => {
-            alert('Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.');
-            console.error(error);
+            console.error('Error:', error);
+            alert('Erro ao enviar o formulário. Por favor, tente novamente ou entre em contato conosco.');
         })
         .finally(() => {
             // Reset loading state

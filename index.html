@@ -135,15 +135,14 @@
                       action="/thank-you.html" 
                       class="px-8 pb-12 space-y-12" 
                       id="serviceForm"
-                      netlify
+                      data-netlify="true"
                       data-netlify-recaptcha="true"
-                      netlify-honeypot="bot-field">
+                      data-netlify-honeypot="bot-field">
                     
                     <!-- Netlify Honeypot & Hidden Fields -->
                     <p class="hidden">
                         <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
                     </p>
-                    <!-- form-name is injected by Netlify, but we keep a manual one for safety in AJAX if injection fails or for local logic -->
                     <input type="hidden" name="form-name" value="after-sales-registration" />
 
                     <section class="space-y-6">
