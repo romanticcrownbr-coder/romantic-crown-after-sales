@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Service Type & Description Visibility Logic
     const descSection = document.getElementById('description-section');
+    const serviceRadios = form.querySelectorAll('input[name="service_type"]');
     
     function toggleDescription() {
-        const serviceRadios = form.querySelectorAll('input[name="service_type"]');
         let selectedValue = null;
         serviceRadios.forEach(radio => {
             if (radio.checked) selectedValue = radio.value;
@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Attach listeners immediately
-    const serviceRadios = form.querySelectorAll('input[name="service_type"]');
     serviceRadios.forEach(radio => {
         radio.addEventListener('change', toggleDescription);
     });
