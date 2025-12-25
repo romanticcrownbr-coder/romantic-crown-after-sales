@@ -27,33 +27,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Service Type & Description Visibility Logic
     const descSection = document.getElementById('description-section');
-    const serviceRadios = form.querySelectorAll('input[name="service_type"]');
-
+    
     function toggleDescription() {
+        const serviceRadios = form.querySelectorAll('input[name="service_type"]');
         let selectedValue = null;
         serviceRadios.forEach(radio => {
             if (radio.checked) selectedValue = radio.value;
         });
 
+        if (!descSection) return;
+
         // Only show description for 'claim' (申请保修) and 'support' (技术支持)
         if (selectedValue === 'claim' || selectedValue === 'support') {
             descSection.classList.remove('hidden');
             descSection.classList.add('animate-fade-in');
-            descInput.setAttribute('required', '');
+            if(descInput) descInput.setAttribute('required', '');
         } else {
             // Hide for 'register' (注册保修) or no selection
             descSection.classList.add('hidden');
             descSection.classList.remove('animate-fade-in');
-            descInput.removeAttribute('required');
+            if(descInput) descInput.removeAttribute('required');
             
             // Clear validation state
-            const formGroup = descInput.closest('.form-group');
-            if (formGroup) formGroup.classList.remove('error');
+            if(descInput) {
+                const formGroup = descInput.closest('.form-group');
+                if (formGroup) formGroup.classList.remove('error');
+            }
             const errorSpan = document.getElementById('desc-error');
             if (errorSpan) errorSpan.textContent = '';
         }
     }
 
+    // Attach listeners immediately
+    const serviceRadios = form.querySelectorAll('input[name="service_type"]');
     serviceRadios.forEach(radio => {
         radio.addEventListener('change', toggleDescription);
     });
