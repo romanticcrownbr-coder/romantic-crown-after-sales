@@ -186,6 +186,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        const formData = new FormData(form);
+        const orderNumber = formData.get('order_number').trim();
+
+        // 1. Client-side Duplicate Check
+        const submittedOrders = JSON.parse(localStorage.getItem('submitted_orders') || '[]');
+        if (submittedOrders.includes(orderNumber)) {
+            alert('Atenção: Este número de pedido já foi enviado anteriormente. Se precisar de nova assistência, entre em contato direto por e-mail.');
+            return;
+        }
+
+        // 2. Simple Client-side Captcha Check (UX only, real check is server-side)
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            const captchaResponse = formData.get('g-recaptcha-response');
+            if (captchaResponse === "") {
+                alert('Por favor, confirme que você não é um robô.');
+                return;
+            }
+        }
+
         // Show loading state
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -194,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Submit to Netlify via AJAX
-        const formData = new FormData(form);
         
         fetch('/', {
             method: 'POST',
@@ -202,6 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
             body: new URLSearchParams(formData).toString()
         })
         .then(() => {
+            // Save order number to local storage to prevent duplicates
+            submittedOrders.push(orderNumber);
+            localStorage.setItem('submitted_orders', JSON.stringify(submittedOrders));
+
             // Success
             openSuccessModal();
             form.reset();
